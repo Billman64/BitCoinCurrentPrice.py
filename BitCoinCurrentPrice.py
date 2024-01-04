@@ -12,7 +12,7 @@ def p(str): # simple function that prints only if verbosity allows
 
 # Get currency, verbosity level from command-line arguments
 for i in sys.argv:
-    match i:
+    match i.lower():
         case "eur":
             sym = "€"
             curr = "EUR"
