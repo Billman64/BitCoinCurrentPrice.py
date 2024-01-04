@@ -18,7 +18,7 @@ def help():
     print("")
     print("Note: Compatible with Python 3.1+. Data source is from Coindesk.")
     print("")
-    exit()
+    sys.exit()
 
 
 
