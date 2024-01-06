@@ -1,7 +1,8 @@
 import requests
 import json
 import sys
-
+import os
+#from timeit import default_timer as timer
 
 # defaults
 verbosity = True
@@ -9,8 +10,9 @@ url_base = "https://api.coindesk.com/v1/bpi/"
 url = url_base + "currentprice.json"
 url_alt = "currentprice/"
 #url = "https://api.coindesk.com/v1/bpi/currentprice.json"
-curr_list = ["amd","ang","ars","awg","aud","bam","bbd","bdt","bgn","bwp","bzd","chf", "clp",
-             "cny", "cad", "cop", "crc", "cuc", "cup","cve","czk", "hkd", "hnl", "hrk", "htg", "huf", "inr","iqd","isk", "jpy", "krw", "kyd", "mxn", "nok", "nzd", "pab", "pen", "qar", "ron", "rub", "sek", "uah", "xas", "xau", "xbt", "xcd", "xdr"]
+
+curr_list = {"AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTN","BWP","BYR","BZD","CAD","CDF","CHF","CLF","CLP","CNY","COP","CRC","CUC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","FJD","FKP","GEL","GGP","GHS","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD","JOD","JPY","KES","KGS","KHR","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","STD","STN","SVC","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX","UYU","UZS","VES","VND","VUV","WST","XAF","XAG","XAU","XBT","XCD","XDR","XOF","XPF","YER","ZAR","ZMW","ZWL"}
+# converted to a dictionary for (usually) faster read times
 
 def help():
     import os
@@ -31,6 +33,8 @@ def help():
 def p(str): # simple function that prints only if verbosity allows
     if(verbosity): print(str)
 
+#start = timer()
+    
 # Get currency, verbosity level from command-line arguments
 for i in sys.argv:
     match i.lower():
@@ -52,7 +56,7 @@ for i in sys.argv:
         case _:
             sym = "$"
             curr = "USD"
-    if (i in curr_list):
+    if (i.upper() in curr_list):
         sym=""
         curr = i.upper()
         url = url_base + url_alt + i.upper() + ".json"
@@ -63,11 +67,14 @@ p("Getting the current price of BitCoin...")
 response = requests.get(url)
 
 # Output - parsing data
+os.system("")
 if(response.status_code == 200):
     p(response.json()['time']['updated'])
-    print(sym + response.json()['bpi'][curr]['rate'] + " " + response.json()['bpi'][curr]['description'])
+    print(sym + response.json()['bpi'][curr]['rate'])
+    p(response.json()['bpi'][curr]['description'])    
     p("\n" + response.json()['disclaimer'])
 else:
     p("Could not get data. Status code: " + str(response.status_code))
 
-
+#end = timer()
+#p("duration (processing): %f ms" %(1000*(end - start))
